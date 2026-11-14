@@ -168,6 +168,7 @@ $('sound').addEventListener('click', () => {
 
 document.addEventListener('keydown', event => {
   if (event.target.closest('button, input, a')) return;
+  if (event.altKey || event.ctrlKey || event.metaKey) return;
   if (event.code === 'Space') { event.preventDefault(); $('final-toggle').click(); return; }
   if (exporting || !sections.length) return;
   if (event.code === 'ArrowLeft' || event.code === 'ArrowRight') {
