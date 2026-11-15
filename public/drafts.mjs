@@ -220,7 +220,15 @@ const KINDS = {
   }
 };
 
-const luminance = hex => { const n = parseInt(hex.slice(1), 16); return ((n >> 16) * .3 + ((n >> 8) & 255) * .59 + (n & 255) * .11) / 255; };
+// `#rgb` expands to `#rrggbb` first; anything that is not a full hex colour reads as white,
+// so the light default wins instead of a channel triple assembled from the wrong digits.
+export const luminance = hex => {
+  let value = typeof hex === 'string' ? hex.trim() : '';
+  if (/^#[0-9a-f]{3}$/i.test(value)) value = `#${value[1]}${value[1]}${value[2]}${value[2]}${value[3]}${value[3]}`;
+  if (!/^#[0-9a-f]{6}$/i.test(value)) return 1;
+  const n = parseInt(value.slice(1), 16);
+  return ((n >> 16) * .3 + ((n >> 8) & 255) * .59 + (n & 255) * .11) / 255;
+};
 // Drafts are strictly black and white: only whether a frame is light or dark is kept from
 // the finished film; every colour becomes black, white or a grey.
 function colors(palette, override = {}) {
